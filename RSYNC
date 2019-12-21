@@ -1,0 +1,29 @@
+#!/bin/bash
+#Purpose = Example code to trap rsync errors and report
+#Start
+
+#Variables
+SOURCE="someuser@remote_host:/data/"
+DESTINATION="/data/"
+LOGFILE=/var/log/rsyncDataBackup.log
+SENDER="usernamex@hostname.com"
+RECIPIENT="username@example.co.nz"
+SUBJECT="Server.app RSYNC_ERROR - Log Attached"
+BODY="Latest RSYNC did not complete successfully"
+
+#Do the deed
+rsync -avhq -e "ssh -p 22" $SOURCE $DESTINATION --log-file=$LOGFILE
+SUCCESS=$?
+echo $SUCCESS
+
+#Email Notification
+if [ "${SUCCESS}" = "0" ]; then
+echo "Backup Process was Successful"
+else
+echo "Backup Process was UN-SUCCESSFUL"
+echo "Sending Email..."
+echo "$BODY" | mail -s "$SUBJECT" -r "$SENDER" -a "$LOGFILE" "$RECIPIENT"
+echo "Email Sent."
+exit 1
+fi
+#END
