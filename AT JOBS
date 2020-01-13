@@ -1,0 +1,5 @@
+Remember that the /usr/bin/at command takes STDIN as the command to be run. This syntax is incorrect:
+$ at now +1 minute command
+
+But this will work:
+$ echo "command" | at now + 1 minute
