@@ -1,0 +1,141 @@
+HMC UPDATE - HMC UPGRADE
+(Remote HMC update/upgrade using network images.)
+
+
+
+HMC UPDATE:
+(apply fixes, service packs, for example MH01601)
+
+# tail -f /tmp/HmcInstall.log                                    <--during upd. (updhmc) installation log entries are logged here
+# ls -l /dump/efix                                               <--during upd. image from ftp server first will be copied here before install
+
+
+1. Read Documentation (readme) of fix + download iso image
+# csum -h SHA1 MH01601.iso                                       <--checksum on iso files, compare values with the value on above readme
+
+
+2. Save config, backup and reboot
+# lshmc -v; lshmc -V; lshmc -n; lshmc -r; monhmc -r disk         <--save config outputs and check fs for enough space (monhmc is like df)
+# bkconsdata -r ftp -h <ftp host> -u <user> -d <directory>       <--do a backup (it can take longer, in GUI: Backup Management Console Data)
+# hmcshutdown -t now -r                                          <--reboot HMC (to see if it comes back)
+
+
+3. Update
+# updhmc -t s -h <servername> -f <location of iso> -u <user> -i  <--do update (in GUI: Updates --> Update HMC)
+                                                                (-t s: type to update from is server (s), -i: prompt for password)
+
+4. create a new backup
+
+
+-------------------------------
+
+
+HMC UPGRADE:
+(for example from 8.8.3 to 8.8.4)
+
+# ls -l /mnt/upgrade                                             <--during saveupgdata (file "doRestore" triggers automat. upgr. after reboot)
+# ls -l /hmcdump                                                 <--during getupgfiles (check for files and correct sizes)
+                                                                 (from 8.8.3 to 8.8.4 only 1 file was copied, but usually all of them needed)
+
+1. Read documentation (HMC models, fixes, sytem firmwares..) + download network images
+download link: http://www14.software.ibm.com/webapp/set2/sas/f/netinstall/home.html
+# sum bzImage initrd.gz disk1.img disk2.img disk3.img            <--do checksum on downloaded files, compare result: cat hmcnetworkfiles.sum
+                                                                 (hmcnetworkfiles.sum contains checksum values)
+
+2. Save profile data of each Man. Sys      
+# BK_DATE="`date '+%Y%m%d'`"; export BK_DATE                     <--initialize variable of backup date variable (for correct file name)
+# for MSYS in `lssyscfg -r sys -F name`; do bkprofdata -m ${MSYS} -f ${MSYS}_${BK_DATE}.prof --force; done <--saving profile data
+                                                                 (in GUI: Sys. Man. --> Server --> Config. --> Man. Part. Data --> Backup)
+
+3. Save config, backup HMC and reboot
+# lshmc -v; lshmc -V; lshmc -n; lshmc -r                         <--save config outputs
+# bkconsdata -r ftp -h <ftp host> -u <user> -d <directory>       <--do a backup (it can take longer, in GUI: Backup Management Console Data)                                                            
+# chsvcevent -o closeall                                         <---close open service events
+# chhmcfs -o f -d 0                                              <---clear old archived diagnostic logs
+# hmcshutdown -t now -r                                          <--reboot HMC (to see if it comes back)
+
+
+4. Save Upgrade Data
+# saveupgdata -r disk                                            <--save config data (it mounts /mnt/upgrade, saves conf., then umounts it)  
+(This data is used during next boot, do not reboot HMC after this has been done, or you have to do this step again. It should take few mins.)
+
+
+5. FTP network images to HMC
+# getupgfiles -h <ftp host> -u <user> -d <directory>             <--copy network images from ftp server to HMC (ls -l /hmcdump shows progress)
+(After ftp shell gives back command prompt, /hmcdump will be empty again, as files were placed to a special location for alternate boot.)
+
+
+6. Set HMC to boot from alternate disk
+# chhmc -c altdiskboot -s enable --mode upgrade                  <--set alternate boot
+# lshmc -r                                                       <--check if alternate boot is enabled
+                                                                (..,netboot=disable,altdiskboot=enable,...)
+# hmcshutdown -t now -r                                          <--reboot (it boots from alternate disk partition, upgr. can take an hour.)
+
+
+7. Create a backup
+
+
+-------------------------------
+
+FTP connection between HMC and FTP server
+
+FTP connection will be needed between HMC and FTP server. FTP server is where the install images are stored (it can be a NIM server.)
+
+If you want to use remote FTP installs on HMC, an FTP user will be needed on the remote (AIX) server.
+There is a default script on AIX which creates an ftp or anonymous user for this FTP connection: /usr/samples/tcpip/anon.ftp
+IBM officially says this scripts should be used to create FTP user, otherwise connection will work but files may won’t be reachable by HMC, but actually I created in the past FTP users with other method and it worked well.
+
+FTP check from HMC:
+- in GUI try to do an update operation, and choose FTP, or do an HMC backup (just it could take long)
+- try sendfile command on HMC, which transfer files with ftp to another server
+  sendfile -f id_dsa.pub -h 10.10.10.1 -d /nim/hmcftp -u hmcftp
+
+
+-------------------------------
+
+The below post was my original description about HMC upgrades, and I keep it for reference, but the method described above is more up to date.
+
+HMC UGRADE (v6.1.3 -> v7.3.5)
+(this can be done as hmc user)
+
+1. check prerequisites:
+    - hmc device supports new hmc version
+    - system firmware on supported levels (http://www-933.ibm.com/support/fixcentral/firmware/supportedCombinations)
+    - Back up critical console data (to an FTP server is OK)
+
+2. some fixes have to be installed prior to the upgrade:
+MH01082, MH01110, MH01128 and after that MH01127 (this will enable upgrade to v7 in 1 step)
+
+    - download zip files and store them on an FTP server
+    - on HMC: Licensed Internal Code upd. -> HMC Code Update -> Inst. Corr. Serv. -> Download from remote ... (give absolute path to file)
+    - hmcshutdown -t now -r            <--reboot HMC (it took for me 10-15 minutes)
+    - lshmc -V                         <--verify update successfully installed
+
+
+3. upgrade to v7.3.5:
+    - download necessary install images to an FTP server
+    - chsvcevent -o closeall           <--closes all serviceable events on the HMC to clean up before upgrade (for me did not work)
+    - chhmcfs -o f -d 0                <--clearing out old logfiles to clean up before upgrade (for me did not work)
+    - hmcshutdown -t now -r            <--make sure there are no problems with reboot (if we did this in step 2 we can omit here)
+
+    - saveupgdata -r disk              <--it mounts /mnt/upgrade, save config. data then unmounts it (it took less than a minute)
+                                       (this is only configuration data, which will be used during reboot after the upgrade)
+    - getupgfiles -h <ftp server> -u <user> --passwd <paswd> -d <dir on ftp server>    <--mounts /hmcdump, copy install files there, umount
+    - chhmc -c altdiskboot -s enable --mode upgrade        <--it sets HMC to boot from the install images and allow the upgrade to proceed
+    - hmcshutdown -t now -r            <--it took 30-40 minutes for me
+    - lshmc -V                         <--it will show new version
+
+4. some fixes are available to 7.3.5 which can be installed:
+    - download iso images to FTP server
+    (first HMC_Update_V7R350_SP3.iso has to be installed after that MH01259.iso)
+
+    - install:
+        from command line:
+        updhmc -t s -h <ftp server> -u <user> -p <passwd> -f /software/server/hmc/fixes/MH01195.iso -r
+ 
+        from GUI:
+        Updates -> Update HMC -> next, next ...
+
+    - hmcshutdown -t now -r            <--reboot HMC for the changes to be available (after each fix install)
+
+5. create backup
