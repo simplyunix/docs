@@ -1,0 +1,10 @@
+Save config, backup and reboot
+# lshmc -v; lshmc -V; lshmc -n; lshmc -r; monhmc -r disk         <--save config outputs and check fs for enough space (monhmc is like df)
+# bkconsdata -r ftp -h <ftp host> -u <user> -d <directory>       <--do a backup (it can take longer, in GUI: Backup Management Console Data)
+
+Save profile data of each Man. Sys      
+# BK_DATE="`date '+%Y%m%d'`"; export BK_DATE                     <--initialize variable of backup date variable (for correct file name)
+# for MSYS in `lssyscfg -r sys -F name`; do bkprofdata -m ${MSYS} -f ${MSYS}_${BK_DATE}.prof --force; done <--saving profile data
+                                                                 (in GUI: Sys. Man. --> Server --> Config. --> Man. Part. Data --> Backup)
+                                                                 
+                                                                 
