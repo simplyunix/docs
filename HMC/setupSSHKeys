@@ -1,0 +1,15 @@
+put ssh_key to hmc (passwordless login as hscroot)
+
+version 1:
+    - scp hscroot@hmc_name:.ssh/authorized_keys2 temp_hmc
+    - cat id_rsa.pub >> temp_hmc
+    - scp temp_hmc hscroot@hmc_name:.ssh/authorized_keys2
+    - Test it: ssh hscroot@hmc_name date
+
+
+version 2:
+    scp id_rsa.pub hmc9:                        <--copy your public key to hmc
+    ssh hmc9                                    <--login to hmc (it will ask for a password at this time)
+    KEY=`cat id_rsa.pub`                        <--put in the cat command to a variable
+    mkauthkeys -a "$KEY"                        <--puts the public key into authorized_keys file
+    ssh hmc9                                    <--logint without a password
