@@ -1,0 +1,1 @@
+# hmcshutdown -t now -r                                          <--reboot (it boots from alternate disk partition, upgr. can take an hour.)
