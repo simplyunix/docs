@@ -1,3 +1,14 @@
+(8) firewalls/proxy's
+Traffic transporting call home data will go through the customer network and needs to be able to reach the IBM servers on the following IP's on IP port 443 (secure HTTP),
+129.42.26.224
+129.42.42.224
+129.42.50.224
+129.42.56.216
+129.42.58.216
+129.42.60.216
+170.225.15.41
+Have firewalls/proxy's been set up at "both" sites to permit this traffic?
+
 hscroot@kap-mhs-hmc-01:~> lshmc -e
 emch=disabled,callhome=disabled,registered_hmcs=
 
