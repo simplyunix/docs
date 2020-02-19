@@ -1,3 +1,9 @@
+hscroot@kap-mhs-hmc-01:~> lshmc -e
+emch=disabled,callhome=disabled,registered_hmcs=
+
+hscroot@orb-mhs-hmc-01:~> lshmc -e
+emch=disabled,callhome=enabled,registered_hmcs=
+
 hscroot@kap-mhs-hmc-01:~> lssysconn -r all
 resource_type=sys,type_model_serial_num=8284-22A*682FDCX,sp=unavailable,sp_phys_loc=unavailable,ipaddr=192.168.240.7,alt_ipaddr=unavailable,state=Connecting,connection_error_code=Connecting  0000-0000-00000000
 resource_type=sys,type_model_serial_num=8284-22A*682FDCX,sp=unavailable,sp_phys_loc=unavailable,ipaddr=192.168.240.6,alt_ipaddr=unavailable,state=Connecting,connection_error_code=Connecting  0000-0000-00000000
