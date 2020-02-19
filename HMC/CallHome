@@ -1,0 +1,19 @@
+hscroot@orb-mhs-hmc-01:~> lssysconn -r all
+resource_type=sys,type_model_serial_num=8284-22A*682FDCX,sp=primary,sp_phys_loc=U78CB.001.WZS0Y5V-P1,ipaddr=192.168.240.8,alt_ipaddr=unavailable,state=Connected
+resource_type=sys,type_model_serial_num=8284-22A*682FDEX,sp=primary,sp_phys_loc=U78CB.001.WZS0YD4-P1,ipaddr=192.168.240.6,alt_ipaddr=unavailable,state=Connected
+
+hscroot@kap-mhs-hmc-01:~> lssysconn -r all
+resource_type=sys,type_model_serial_num=8284-22A*682FDCX,sp=unavailable,sp_phys_loc=unavailable,ipaddr=192.168.240.7,alt_ipaddr=unavailable,state=Connecting,connection_error_code=Connecting  0000-0000-00000000
+resource_type=sys,type_model_serial_num=8284-22A*682FDCX,sp=unavailable,sp_phys_loc=unavailable,ipaddr=192.168.240.6,alt_ipaddr=unavailable,state=Connecting,connection_error_code=Connecting  0000-0000-00000000
+resource_type=sys,type_model_serial_num=8284-22A*682FDCX,sp=primary,sp_phys_loc=U78CB.001.WZS0Y5V-P1,ipaddr=172.16.222.41,alt_ipaddr=unavailable,state=Connected
+resource_type=sys,type_model_serial_num=8284-22A*682FDEX,sp=primary,sp_phys_loc=U78CB.001.WZS0YD4-P1,ipaddr=172.16.222.42,alt_ipaddr=unavailable,state=Connected
+
+Removing the 2 connections pending.
+
+hscroot@kap-mhs-hmc-01:~> # rmsysconn -o remove --ip x.x.x.x
+hscroot@kap-mhs-hmc-01:~> rmsysconn -o remove --ip 192.168.240.7
+hscroot@kap-mhs-hmc-01:~> rmsysconn -o remove --ip 192.168.240.6
+hscroot@kap-mhs-hmc-01:~>
+hscroot@kap-mhs-hmc-01:~> lssysconn -r all
+resource_type=sys,type_model_serial_num=8284-22A*682FDCX,sp=primary,sp_phys_loc=U78CB.001.WZS0Y5V-P1,ipaddr=172.16.222.41,alt_ipaddr=unavailable,state=Connected
+resource_type=sys,type_model_serial_num=8284-22A*682FDEX,sp=primary,sp_phys_loc=U78CB.001.WZS0YD4-P1,ipaddr=172.16.222.42,alt_ipaddr=unavailable,state=Connected
