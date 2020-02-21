@@ -1,0 +1,19 @@
+cat filename | tr "[:lower:]" "[:upper:]"
+convert to lower case:
+
+1.
+cat filename | tr "[:upper:]" "[:lower:]"
+I am sort of tired of tr and was looking for way to use perl, here is my hack:
+
+convert to upper case:
+
+1.
+perl -wpl -e 's/^.*$/\U$&/g;' filename
+convert to lower case:
+
+1.
+perl -wpl -e 's/^.*$/\U$&/g;' filename
+It basically match anything (*) in between the beginning (^) 
+and the end ($), substitute (/s) just the same string by applying the modifier, \L (lower case) 
+and \U (upper case). Not necessarily easier than using tr, just an attempt with perl oneliner. 
+Remember TMTOWTDI? Yeah, "There's more than one way to do it".
