@@ -1,0 +1,1 @@
+du -ks * | perl -lne '@a=split /\s+/;$x=$_!=0?int(log()/log(1024)):0;@b=('K','M','G');printf("%.3s%s\t%s\n",$_/(1024)**$x,$b[$x],$a[1]);'
