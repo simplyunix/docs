@@ -1,0 +1,11 @@
+bkconsdata -r nfs -h NFSRVIP -l /NFSFS/hmcname/
+updhmc -t ftp -h ftpServer -u user1 -f /tmp/Update1.iso
+updhmc -t sftp -h sftpServer -u user1 -k /home/hmcuser/keys/id_rsa
+-f /tmp/Update1.iso
+updhmc -t nfs -h 9.3.121.61 -l /hmc/images -f 830/update.iso
+lsmediadev (to obtain mount points)
+mount /media/sdb1
+updhmc -t usb -f /media/sdb1/update2.iso
+
+bkconsdata -r ftp -h ftpserver -u ftpuser --passwd ftppassword
+bkconsdata -r nfs -h 9.3.145.52 -l /home/hmc/backups
