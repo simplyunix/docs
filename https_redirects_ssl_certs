@@ -1,0 +1,30 @@
+Install mod_ssl openssl
+Generate a Private Key
+# openssl genrsa -out ca.key 2048
+Generate CSR
+# openssl req -new -key ca.key -out ca.csr
+PaaS (Pass)
+Generate Self Signed Key
+# openssl x509 -req -days 365 -in ca.csr -signkey ca.key -out ca.crt
+
+Copy the newly generated files to the correct locations with the following commands:
+
+sudo cp ca.crt /etc/pki/tls/certs
+sudo cp ca.key /etc/pki/tls/private/ca.key
+sudo cp ca.csr /etc/pki/tls/private/ca.csr
+
+The next step requires the editing of the /etc/httpd/conf.d/ssl.conf file. Open that file for editing 
+and locate and change the following lines:
+
+SSLCertificateFile /etc/pki/tls/certs/localhost.crt
+
+changes to:
+
+SSLCertificateFile /etc/pki/tls/certs/ca.crt
+SSLCertificateKeyFile /etc/pki/tls/private/localhost.key
+changes to:
+
+SSLCertificateKeyFile /etc/pki/tls/private/ca.key
+Finally, restart the Apache daemon with the command:
+
+# systemctl restart httpd
