@@ -1,0 +1,4 @@
+Generate the ssh keys
+$ ssh-keygen
+Copy the public key to the remote server
+$ ssh-copy-id username@remote_host
