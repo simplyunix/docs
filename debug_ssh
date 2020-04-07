@@ -1,0 +1,6 @@
+Stop SSH
+Start SSH as below
+/usr/sbin/sshd -D -e -ddd > /tmp/sshd.log 2>&1
+Login via SSH
+Collect the log
+Restart SSH normal
