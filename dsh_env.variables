@@ -1,0 +1,6 @@
+export DSH_NODE_RSH=/usr/bin/ssh
+export DSH_NODE_LIST=/usr/local/etc/nodes
+export DSH_NODE_OPTS="-q"
+export DCP_NODE_RCP=/usr/bin/scp
+export DCP_NODE_OPTS="-q"
+export DSH_CONTEXT=DSH
