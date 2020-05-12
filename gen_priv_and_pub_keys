@@ -1,0 +1,41 @@
+How to Generate a Public and Private Key from .ppk file ?
+
+https://www.linuxtopic.com/2020/05/puttygen-key-conversion%20.html?utm_source=feedburner&utm_medium=email&utm_campaign=Feed%3A+Linuxtopic+%28linuxtopic.com%29
+rerequisite
+
+1 - puttygen.exe
+2 - ppk file -
+
+We can download puttygen.exe from offical website "https://www.putty.org"
+
+
+Step 1 -
+
+After the download execute "puttygen.exe", dialog will appear.
+
+Step 2
+
+2. Press "Load" button  and select your  .ppk file that contains your private key. 
+If your private key file is protected with a passphrase, you will be 
+prompted to supply the passphrase in order to complete the loading of the private key.
+
+Step 3
+
+3. Go to the main menu "Conversions" and select "Export OpenSSH key",  new window appears for "Save private key as:"
+Press Yes, Choose a location where you want to save the private key and specify a filename for 
+the private key file such as "linuxtopic-genkey" and choose "Save".
+
+Step 4
+
+Now we will Generate a public key by Choosing  a "Save public key" Button. When the "Save public key as:" window appears, specify a 
+ilename for the public key file, such as "linuxtopic-genkey.pub", and choose "Save".
+
+NOTE: if SecureCRT is configured to use a public key named "linuxtopic-genkey.pub", it  expects to find the private key 
+named ""linuxtopic-genkey" in the same folder. so keep following name of file
+
+"linuxtopic-genkey.pub" ----->  public key
+
+"linuxtopic-genkey" ------> private key
+
+Now you have both kye public and private.
+
