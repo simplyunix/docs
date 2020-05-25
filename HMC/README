@@ -139,3 +139,45 @@ MH01082, MH01110, MH01128 and after that MH01127 (this will enable upgrade to v7
     - hmcshutdown -t now -r            <--reboot HMC for the changes to be available (after each fix install)
 
 5. create backup
+
+RMC
+----
+Lists active/inactive RMC connections
+lssyscfg -r lpar -F lpar_id,name,state,rmc_state,rmc_ipaddr -m KAPUA-8284-22A-SN682FDCX
+
+/usr/sbin/rsct/bin/rmcctrl -z
+/usr/sbin/rsct/bin/rmcctrl -A
+/usr/sbin/rsct/bin/rmcctrl -p
+
+hscroot@hmc10:~> lspartition -dlpar
+<#0> Partition:<2*8204-E8A*0680E12 aix10.domain.com, 10.10.50.18>
+       Active:<1>, OS:<AIX, 6.1, 6100-03-01-0921>, DCaps:<0x4f9f>, CmdCaps:<0x1b, 0x1b>, PinnedMem:<1452>
+<#1> Partition:<4*8204-E8A*0680E32 aix20.domain.com, 10.10.50.71>
+       Active:<0>, OS:<AIX, 6.1, 6100-04-05-1015>, DCaps:<0x0>, CmdCaps:<0x1b, 0x1b>, PinnedMem:<656>
+
+For correct DLPAR function:
+- the partition must return with the correct IP of the lpar.
+- the active value (Active:...) must be higher than zero,
+- the decaps value (DCaps:...) must be higher 0x0
+
+ lssrc -a | grep rsct
+ ctrmc            rsct             15138916     active
+ IBM.HostRM       rsct_rm          5636184      active
+ IBM.ConfigRM     rsct_rm          24248380     active
+ IBM.DRM          rsct_rm          11141258     active
+ IBM.MgmtDomainRM rsct_rm          9437230      active
+ IBM.ServiceRM    rsct_rm          6422650      active
+ ctcas            rsct                          inoperative
+ IBM.ERRM         rsct_rm                       inoperative
+ IBM.AuditRM      rsct_rm                       inoperative
+
+- recfgct: deletes the RMC database, does a discovery, and recreates the RMC configuration
+# /usr/sbin/rsct/install/bin/recfgct
+(Wait several minutes)
+# lssrc -a | grep rsct
+
+(If you see IBM.DRM active, then you have probably resolved the issue)
+
+- lsrsrc "IBM.ManagementServer"    <--it shows HMCs via RMC
+
+
