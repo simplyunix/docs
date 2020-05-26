@@ -180,4 +180,8 @@ For correct DLPAR function:
 
 - lsrsrc "IBM.ManagementServer"    <--it shows HMCs via RMC
 
+route add -net 10.11.1.0/24 -netmask 255.255.255.0 10.11.2.1
+route add -net 10.10.1.0/24 -netmask 255.255.255.0 10.11.2.1
+
+
 
