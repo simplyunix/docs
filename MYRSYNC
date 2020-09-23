@@ -1,0 +1,20 @@
+rsync -avzh "/cygdrive/c/Users/sasi.chand/OneDrive - Dimension Data/Sashi" /cygdrive/d 
+rsync -avzh "/cygdrive/c/Users/sasi.chand/OneDrive - Dimension Data/AirNZ" /cygdrive/d 
+rsync -avzh "/cygdrive/c/Users/sasi.chand/OneDrive - Dimension Data/FNU" /cygdrive/d 
+rsync -avzh "/cygdrive/c/Users/sasi.chand/OneDrive - Dimension Data/FTC" /cygdrive/d 
+rsync -avzh "/cygdrive/c/Users/sasi.chand/OneDrive - Dimension Data/MHS" /cygdrive/d 
+rsync -avzh "/cygdrive/c/Users/sasi.chand/OneDrive - Dimension Data/MYKEYS" /cygdrive/d 
+rsync -avzh "/cygdrive/c/Users/sasi.chand/OneDrive - Dimension Data/NOVALINK" /cygdrive/d 
+rsync -avzh "/cygdrive/c/Users/sasi.chand/OneDrive - Dimension Data/Nutanix" /cygdrive/d 
+rsync -avzh "/cygdrive/c/Users/sasi.chand/OneDrive - Dimension Data/PYTHON_CERTS" /cygdrive/d 
+rsync -avzh "/cygdrive/c/Users/sasi.chand/OneDrive - Dimension Data/SKYTV" /cygdrive/d 
+rsync -avzh "/cygdrive/c/Users/sasi.chand/OneDrive - Dimension Data/SOWS" /cygdrive/d 
+rsync -avzh "/cygdrive/c/Users/sasi.chand/OneDrive - Dimension Data/SPECS" /cygdrive/d
+#
+rsync -avzh "/cygdrive/c/Users/sasi.chand/OneDrive - Dimension Data/Transistion Docs" /cygdrive/d 
+rsync -avzh "/cygdrive/c/Users/sasi.chand/OneDrive - Dimension Data/FreeCAD" /cygdrive/d
+rsync -avzh "/cygdrive/c/Users/sasi.chand/OneDrive - Dimension Data/RHEL" /cygdrive/d
+rsync -avzh "/cygdrive/c/Users/sasi.chand/OneDrive - Dimension Data/RHEL_OPENSTACK" /cygdrive/d
+rsync -avzh "/cygdrive/c/Users/sasi.chand/OneDrive - Dimension Data/POS_PRICING_MODELS" /cygdrive/d
+rsync -avzh "/cygdrive/c/Users/sasi.chand/OneDrive - Dimension Data/RFPs" /cygdrive/d
+rsync -avzh "/cygdrive/c/Users/sasi.chand/OneDrive - Dimension Data/IBM_CERTS" /cygdrive/d
