@@ -13,3 +13,21 @@ version 2:
     KEY=`cat id_rsa.pub`                        <--put in the cat command to a variable
     mkauthkeys -a "$KEY"                        <--puts the public key into authorized_keys file
     ssh hmc9                                    <--logint without a password
+
+
+HMC
+
+create a HMC account with role hmcviewer on the HMC server
+$ ssh -l hscroot hmc1
+hscroot@hmc1:~> mkhmcusr -u lpar2rrd -a hmcviewer --passwd abc1234
+Paste the pub key created above to mkauthkeys command on the HMC
+(as hscroot, all in one line, without carriage returns):
+hscroot@hmc1:~> mkauthkeys -u lpar2rrd -a 'ssh-rsa AAAAB3NzaC1kc3MAAACBALvbupPL
+nqy6UfJjgMG5SRnnFDfD013OtBxFv8P7qoHfGKCG0Vu2IhNCYttpYMmsMR+BWADo4c9oT7r92raLfVDjNW
+8uO5C5fatK305+sNqazbT91HDDNDKQnbpoKUqybVRC2BQbPR8ESh+ws3uHdxXSQKwOSyrHO6Nwkkx8/h4T
+AAAAFQDZgT9MxrEUQg4uOwxhciwwdoOO8QAAAIAH37x06Ia4FiCdlk3U9vuOI0QEvCKMXL+ZPFNoRcgiqi
+CnR2WeiaG5qM+odYWk/F/owV0Y/DmkmrrjPrgDADjS1uKoSy+NMg803+4cS1B06EMtia+RmMbWkr+kQZ90
+WvB8C5cxofzcllnQjztQxVrZnZPmMI73/SQdS7QBU9a9WwAAAIA3VAdMvP+ZO3zs57FaznMySoszxgNWxu
+INlcP61TQuyuCp5Bq3mFXwxFwJWPpqpbW5yHj9N1+3pscSsFxEQb9YVvb1oL9c5QdPDnmXZK8BHHmNZ{{M
+n+ftuzJKHgR2lynaxQ4hxTnz+xT0ywGwokeuuCnr4G3Bftc70Yn9vCNjuzGQ== lpar2rrd@p550-2'
+Note a problem on HMC V8.8.6+ where user hscroot is not able to set user's SSH keys with no printing any error message. As a workaround log as lpar2rrd and run mkauthkeys:
