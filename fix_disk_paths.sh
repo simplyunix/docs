@@ -38,4 +38,11 @@ rmpath –dl hdisk20 –p fscsi0 –w 5001738065920151,6000000000000
 rmpath –dl hdisk20 –p fscsi1 –w 5001738065920183,6000000000000
 rmpath –dl hdisk20 –p fscsi1 –w 5001738065920171,6000000000000
 
+Or
+
+disks=$(lspv | awk '{print $1}')
+for disk in $disks
+do
+lspath -l $disk  -F "name:parent:connection:status" | awk -F ":"  '/Disabled|Failed/ {print "rmpath -dl", $1, "-p", $2, "-w", $3}'
+done
 
