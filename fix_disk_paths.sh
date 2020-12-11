@@ -46,3 +46,14 @@ do
 lspath -l $disk  -F "name:parent:connection:status" | awk -F ":"  '/Disabled|Failed/ {print "rmpath -dl", $1, "-p", $2, "-w", $3}'
 done
 
+Or
+
+#!/bin/sh
+# rmpaths
+>schand.rmpaths
+echo "#!/bin/sh" >>schand.rmpaths
+disks=$(lspv | awk '{print $1}')
+for disks in $disks
+do
+lspath -l $disk  -F "name:parent:connection:status" | awk -F ":"  '/Disabled|Failed/ {print "rmpath -dl", $1, "-p", $2, "-w", $3}'>>schand.rmpaths
+done
