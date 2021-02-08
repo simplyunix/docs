@@ -1,4 +1,6 @@
 bkconsdata -r nfs -h NFSRVIP -l /NFSFS/hmcname/
+e.g.
+# bkconsdata -r nfs -h 125.210.210.10 -l /repos/backups/hmc/
 updhmc -t ftp -h ftpServer -u user1 -f /tmp/Update1.iso
 updhmc -t sftp -h sftpServer -u user1 -k /home/hmcuser/keys/id_rsa
 -f /tmp/Update1.iso
