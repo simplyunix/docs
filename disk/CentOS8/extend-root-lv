@@ -1,0 +1,244 @@
+[root@kap-mhs-nagios01 ~]# df -h
+Filesystem                          Size  Used Avail Use% Mounted on
+devtmpfs                            888M     0  888M   0% /dev
+tmpfs                               903M     0  903M   0% /dev/shm
+tmpfs                               903M   97M  807M  11% /run
+tmpfs                               903M     0  903M   0% /sys/fs/cgroup
+/dev/mapper/centos-root              37G   34G  736M  98% /
+/dev/mapper/volGroup02-lv_stor2rrd   50G  5.2G   44G  11% /stor2rrd
+/dev/mapper/volGroup01-lv_lpar2rrd   50G  967M   48G   2% /lpar2rrd
+/dev/sda1                           976M  128M  782M  15% /boot
+tmpfs                               181M     0  181M   0% /run/user/1003
+tmpfs                               181M     0  181M   0% /run/user/0
+
+/dev/mapper/centos-root              37G   34G  736M  98% /
+The LVM volume has a size of 6.2G and is mounted in the root directory /, we will increase it
+
+[root@kap-mhs-nagios01 ~]# fdisk -l
+Disk /dev/sdb: 50 GiB, 53687091200 bytes, 104857600 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+
+Disk /dev/sda: 40 GiB, 42949672960 bytes, 83886080 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: dos
+Disk identifier: 0x000a159b
+
+Device     Boot   Start      End  Sectors Size Id Type
+/dev/sda1  *       2048  2099199  2097152   1G 83 Linux
+/dev/sda2       2099200 83886079 81786880  39G 8e Linux LVM
+
+
+Disk /dev/sdc: 50 GiB, 53687091200 bytes, 104857600 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+
+Disk /dev/mapper/centos-root: 37 GiB, 39720058880 bytes, 77578240 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+
+Disk /dev/mapper/centos-swap: 2 GiB, 2147483648 bytes, 4194304 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+
+Disk /dev/mapper/volGroup02-lv_stor2rrd: 50 GiB, 53682896896 bytes, 104849408 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+
+Disk /dev/mapper/volGroup01-lv_lpar2rrd: 50 GiB, 53682896896 bytes, 104849408 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+[root@kap-mhs-nagios01 ~]#
+
+Disk /dev/sda: 40 GiB, 42949672960 bytes, 83886080 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: dos
+Disk identifier: 0x000a159b
+-------------------------------------------------------------------------------------------------------
+Disk /dev/sda: 40 GiB, 42949672960 bytes, 83886080 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: dos
+Disk identifier: 0x000a159b
+
+Device     Boot   Start      End  Sectors Size Id Type
+/dev/sda1  *       2048  2099199  2097152   1G 83 Linux
+/dev/sda2       2099200 83886079 81786880  39G 8e Linux LVM
+-------------------------------------------------------------------------------------------------------
+Increase disk size
+In a virtualization environment, increase the size of the hard disk and reboot the system. I increased the disk to 100 gigabytes:
+
+# fdisk -l ---- To check if the size has changed to 100GB or more 100 + 40 = 140
+
+Create partition
+After increasing the size of the disk, you need to create a new partition. Run fdisk /dev/sda, where /dev/sda is the label of our disk (Disk /dev/sda):
+
+# fdisk /dev/sda
+Enter n - create a new partiton
+Next, indicate the type – the primary p:
+
+Partition type
+   p   primary (2 primary, 0 extended, 2 free)
+   e   extended (container for logical partitionsSelect (default p): p
+We are asked to indicate the partitin number, by default it is the following with the number 3:
+
+Partition number (3,4, default 3):3
+
+Next, the starting and ending sectors are indicated. Be sure to check that they match the values ​​specified by a hyphen. Thus we use all unallocated space:
+
+First sector (16777216-20971519, default 16777216):16777216
+Last sector, +sectors or +size{K,M,G,T,P} (16777216-20971519, default 20971519):20971519
+Created a new partition 3 of type 'Linux' and of size 2 GiB.
+
+As you can see, a 2G partition with the Linux type was created. Change the default type to Linux LVM. To do this, use the t command, indicate the type of partition we want to change and number (in this case 3), and enter its code in the 8e hexadecimal system:
+
+Command (m for help): t
+Partition number (1-3, default 3): 3
+Hex code (type L to list all codes): 8e
+Changed type of partition 'Linux' to 'Linux LVM'
+With the p command, let’s see what happened:
+
+Command (m for help): p
+Disk /dev/sda: 10 GiB, 10737418240 bytes, 20971520 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 4096 bytes
+I/O size (minimum/optimal): 4096 bytes / 4096 bytes
+Disklabel type: dos
+Disk identifier: 0xde6ef740
+
+Device     Boot    Start      End  Sectors Size Id Type
+/dev/sda1  *        2048  2099199  2097152   1G 83 Linux
+/dev/sda2        2099200 16777215 14678016   7G 8e Linux LVM
+/dev/sda3       16777216 20971519  4194304   2G 8e Linux LVM
+
+Fine! We created /dev/sda3 partition. It remains only to save the changes with the w command. After that, fdisk will automatically close:
+
+Command (m for help): w
+The partition table has been altered.
+Syncing disks.
+
+CentOS 8 extend LVM
+To use the created volume in LVM, initialize it with the pvcreate command:
+
+# pvcreate /dev/sda3
+  Physical volume "/dev/sda3" successfully created.
+Let’s look at the name of the volume group to which you want to add the partition. We will use vgdisplay for this. The default is cl:
+
+# vgdisplay
+  --- Volume group ---
+  VG Name               cl
+  System ID
+  Format                lvm2
+  Metadata Areas        1
+  Metadata Sequence No  3
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                0
+  Cur LV                2
+  Open LV               2
+  Max PV                0
+  Cur PV                1
+  Act PV                1
+  VG Size               <7.00 GiB
+  PE Size               4.00 MiB
+  Total PE              1791
+  Alloc PE / Size       1791 / <7.00 GiB
+  Free  PE / Size       0 / 0
+  VG UUID               XwDF6A-wEWR-uazD-t4bz-bOMI-3z2L-VXCczx
+Add our partition to this group:
+
+# vgextend cl /dev/sda3
+  Volume group "cl" successfully extended
+Using lvdisplay, we look at the name and path to the logical one that needs to be expanded (by default, this is root and /dev/cl/root):
+
+# lvdisplay
+  --- Logical volume ---
+  LV Path                /dev/cl/swap
+  LV Name                swap
+  VG Name                cl
+  LV UUID                9cy6VE-EIXf-ky21-S55C-TGkH-mkYb-rTtCsU
+  LV Write Access        read/write
+  LV Creation host, time localhost, 2019-10-17 08:32:49 +0300
+  LV Status              available
+  # open                 2
+  LV Size                820.00 MiB
+  Current LE             205
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     8192
+  Block device           253:1
+
+  --- Logical volume ---
+  LV Path                /dev/cl/root
+  LV Name                root
+  VG Name                cl
+  LV UUID                kM68mo-2vZr-3zDP-Sfyc-TlAp-QQb7-XTh0X0
+  LV Write Access        read/write
+  LV Creation host, time localhost, 2019-10-17 08:32:50 +0300
+  LV Status              available
+  # open                 1
+  LV Size                <6.20 GiB
+  Current LE             1586
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     8192
+  Block device           253:0
+Now expand it. To do this, lvextend specify the path to the logical volume and the -l + 100% FREE parameter, which indicates that we want to use 100% free space:
+
+# lvextend -l +100%FREE /dev/cl/root
+  Size of logical volume cl/root changed from <6.20 GiB (1586 extents) to 8.19 GiB (2097 extents).
+  Logical volume cl/root successfully resized.
+The last step left is to expand the file system. If you use xfs (default on Centos 8), execute xfs_growfs:
+
+# xfs_growfs /dev/mapper/cl-root
+meta-data=/dev/mapper/cl-root    isize=512    agcount=4, agsize=406016 blks
+         =                       sectsz=4096  attr=2, projid32bit=1
+         =                       crc=1        finobt=1, sparse=1, rmapbt=0
+         =                       reflink=1
+data     =                       bsize=4096   blocks=1624064, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0, ftype=1
+log      =internal log           bsize=4096   blocks=2560, version=2
+         =                       sectsz=4096  sunit=1 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+data blocks changed from 1624064 to 2147328
+If ext4, use resize2fs:
+
+# resize2fs -p /dev/mapper/cl-root
+
+resize2fs 1.42.9 (28-Dec-2013)
+Filesystem at /dev/mapper/cl-root is mounted on /; on-line resizing required
+old desc_blocks = 1, new_desc_blocks = 2
+Performing an on-line resize of /dev/mapper/cl-root to 2147328 (4k) blocks.
+The filesystem on /dev/mapper/cl-root is now 2147328 blocks long.
+Check the result:
+
+# df -h
+Filesystem           Size  Used Avail Use% Mounted on
+devtmpfs             353M     0  353M   0% /dev
+tmpfs                368M     0  368M   0% /dev/shm
+tmpfs                368M  5.1M  363M   2% /run
+tmpfs                368M     0  368M   0% /sys/fs/cgroup
+/dev/mapper/cl-root  8.2G  2.3G  6.0G  28% /
+/dev/sda1            976M  128M  782M  15% /boot
+tmpfs                 74M     0   74M   0% /run/user/0
+
+As you can see, in CentOS 8 extend LVM partition is not such a difficult task.
